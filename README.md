@@ -205,3 +205,10 @@ If you want to extend it, possible directions include:
 * Registering `run_panoptes_scout` as a tool in an ADK based agent
 
 Fork it, modify it, and let the many eyed scout keep watch over your datasets.
+
+---
+
+## License
+
+Panoptes Scout is released under the MIT License. See the LICENSE file for details.
+
