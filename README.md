@@ -22,6 +22,13 @@ Most people either skip this step or drown in ad hoc checks. The result is fragi
 Panoptes Scout exists so that the first look at a dataset feels clear, structured, and repeatable instead of foggy and improvisational.
 
 ---
+## 📹 Project Video Explanation
+
+Watch this comprehensive overview of Panoptes Scout's features and details:
+
+[![Panoptes Scout: Your Dataset's First Diagnosis](https://img.youtube.com/vi/TnSb1rt40gI/maxresdefault.jpg)](https://youtu.be/TnSb1rt40gI)
+
+---
 
 ## ✅ Solution
 
