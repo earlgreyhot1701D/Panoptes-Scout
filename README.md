@@ -291,30 +291,43 @@ The capstone story is that Panoptes Scout is the deterministic foundation that k
 
 ## 🧠 Architecture
 
-Panoptes Scout keeps a simple internal structure.
+                           ┌──────────────────────────────┐
+                           │        User Request          │
+                           └────────────┬─────────────────┘
+                                        │
+                             Triggers Main Agent Logic
+                                        │
+                       ┌────────────────▼────────────────┐
+                       │          main_agent.py          │
+                       │ Entry point: bootstraps system  │
+                       └────────────┬────────────────────┘
+                                    │
+                     Delegates agent orchestration to:
+                                    ▼
+                       ┌──────────────────────────┐
+                       │       adk_agent.py       │
+                       │  Wraps tool as an agent  │
+                       └────────────┬─────────────┘
+                                    │
+         Uses tool + context window compaction + Gemini call
+                                    ▼
+                       ┌──────────────────────────┐
+                       │     scout_tool.py        │◄────────────────────┐
+                       │ Tool logic: loads CSV,   │                     │
+                       │ QA, briefs, summaries    │                     │
+                       └────────────┬─────────────┘                     │
+                                    │                                   │
+     ┌──────────────────────────────┴──────────────┐                    │
+     │                src/tools.py                │ (legacy refactored)│
+     │       Contains prior tool structure        │                    │
+     └────────────────┬───────────────────────────┘                    │
+                      │                                                │
+                      ▼                                                │
+           ┌─────────────────────┐    ┌──────────────────────────────┐
+           │   eval_data/*.csv   │    │ src/agent.py (wrapper logic)│
+           └─────────────────────┘    └──────────────────────────────┘
 
-At a high level
 
-+----------------------+        +------------------------+
-| CSV file             |   →    | profile_dataset        |
-| provided by user     |        |  missing values        |
-+----------------------+        |  duplicate rows        |
-                                |  numeric statistics    |
-                                |  target distribution   |
-                                +------------------------+
-                                              |
-                                              v
-                                +------------------------+
-                                | build_briefing         |
-                                |  overview              |
-                                |  key issues            |
-                                |  recommendations       |
-                                +------------------------+
-                                              |
-                                              v
-                     +------------------------+------------------------+
-                     | CLI caller       Gemini helper       ADK agent |
-                     +-------------------------------------------------+
 
 Outputs: human readable text briefing and an optional structured summary
 
