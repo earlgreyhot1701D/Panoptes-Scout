@@ -2,17 +2,51 @@ import pandas as pd
 
 
 def profile_dataset(csv_path: str, target_column: str | None = None) -> dict:
-    """Load a CSV file and compute simple profiling statistics.
-
-    The function returns a dictionary with:
-    * n_rows and n_columns
-    * missing: list of dictionaries with column and missing_pct
-    * duplicates_count: number of duplicate rows
-    * numeric_stats: list of dictionaries with basic stats for numeric columns
-    * target_info: target column name and class distribution if provided
     """
+    Profile a CSV dataset for data quality metrics.
 
-    df = pd.read_csv(csv_path)
+    Design: This function is intentionally deterministic and side-effect free.
+    It reads a CSV into pandas and gathers statistics without any LLM calls.
+    This makes it reliable, testable, and cacheable. Higher-level functions
+    (briefing builders, Gemini helpers) can interpret these facts without
+    worrying about non-determinism.
+
+    Returns a dictionary with:
+    - n_rows, n_columns: Dataset shape
+    - missing: List of columns with missing values
+    - duplicates_count: Number of duplicate rows
+    - numeric_stats: List of dictionaries with basic stats for numeric columns
+    - target_info: Distribution of target column (if provided)
+
+    Args:
+        csv_path: Path to CSV file
+        target_column: Optional target column name for distribution analysis
+
+    Returns:
+        dict: Profiling statistics
+
+    Raises:
+        FileNotFoundError: If CSV file doesn't exist
+        ValueError: If CSV cannot be parsed
+        RuntimeError: For other unexpected errors
+    """
+    try:
+        df = pd.read_csv(csv_path)
+    except FileNotFoundError:
+        raise FileNotFoundError(
+            f"CSV file not found: {csv_path}\n"
+            f"Please check the path and try again."
+        )
+    except pd.errors.ParserError as e:
+        raise ValueError(
+            f"Failed to parse CSV {csv_path}. "
+            f"Ensure it's valid CSV format.\n"
+            f"Details: {str(e)}"
+        )
+    except Exception as e:
+        raise RuntimeError(
+            f"Unexpected error reading {csv_path}: {str(e)}"
+        )
 
     n_rows, n_columns = df.shape
 
