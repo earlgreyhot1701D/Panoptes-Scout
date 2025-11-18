@@ -1,7 +1,7 @@
 
 import pandas as pd
 
-IMBALANCE_THRESHOLD = 0.10  # Flag if any class is <10% of target distribution
+IMBALANCE_THRESHOLD = 0.25  # Flag if any class is <25% of target distribution
 
 def profile_dataset(csv_path: str, target_column: str | None = None) -> dict:
     """
