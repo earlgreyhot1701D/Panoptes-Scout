@@ -1,2 +1,239 @@
-pandas>=2.0.0
-google-generativeai>=0.3.0
+# Panoptes Scout: Requirements & Dependencies
+# ============================================
+# 
+# This file documents all Python dependencies for Panoptes Scout.
+# The project uses a layered dependency structure to keep the core
+# lightweight while enabling optional advanced features.
+#
+# INSTALLATION:
+#   pip install -r requirements.txt
+#
+# For development with additional tools:
+#   pip install -r requirements.txt -r requirements-dev.txt
+
+# ============================================================================
+# CORE DEPENDENCIES (Required for all functionality)
+# ============================================================================
+
+# Data Processing & Analysis
+# pandas: Core data manipulation and profiling engine
+# - Used in: src/tools.py (profile_dataset function)
+# - Version: 2.0.0+ for improved performance and type hints
+# - Why this version: Stable, well-tested, supports nullable dtypes
+# - Disk space: ~100 MB with dependencies
+pandas>=2.0.0,<3.0.0
+
+# ============================================================================
+# LLM & AI DEPENDENCIES (For Gemini analysis layer)
+# ============================================================================
+
+# Google Generative AI (Gemini)
+# google-generativeai: LLM integration for narrative briefing generation
+# - Used in: main_agent.py, scout_tool.py (Gemini analysis layer)
+# - Version: 0.3.0+ for stable API and context management
+# - Why this version: First stable release with reliable streaming and tool use
+# - Features: Streaming responses, token counting, structured output
+# - Disk space: ~20 MB with dependencies
+# - API Key Required: Set GOOGLE_API_KEY environment variable
+google-generativeai>=0.3.0,<1.0.0
+
+# ============================================================================
+# AGENT FRAMEWORK DEPENDENCIES (For ADK integration)
+# ============================================================================
+
+# Google Agent Development Kit (ADK)
+# NOTE: This is a placeholder for the actual ADK package.
+# When you have access to the ADK from the Google AI Agents Intensive course,
+# replace this line with the correct package name and version.
+#
+# Expected installation (when available):
+#   google-adk>=0.1.0
+#
+# The ADK is used in:
+# - adk_agent.py (agent orchestration and tool registration)
+#
+# The ADK provides:
+# - LlmAgent class for conversational workflows
+# - Tool registration and management
+# - Context/memory management across turns
+# - Structured logging and observability
+# - Integration with Gemini models
+
+# google-adk>=0.1.0  # Uncomment when available
+
+# ============================================================================
+# OPTIONAL DEPENDENCIES (For development and testing)
+# ============================================================================
+
+# These are NOT required for core functionality but useful for development.
+# Install with: pip install -r requirements-dev.txt
+
+# pytest: Testing framework
+# - For: golden_tests.py and unit test development
+# - Version: 7.0+ for modern assertion introspection
+# pytest>=7.0.0,<8.0.0
+
+# pytest-cov: Code coverage reporting
+# - For: Measuring test coverage
+# - Version: Latest stable
+# pytest-cov>=4.0.0,<5.0.0
+
+# black: Code formatting
+# - For: Consistent code style (PEP 8)
+# - Version: Latest stable
+# black>=23.0.0
+
+# mypy: Static type checking
+# - For: Catching type errors before runtime
+# - Version: Latest stable
+# mypy>=1.0.0
+
+# flake8: Linting
+# - For: Code quality checks
+# - Version: Latest stable
+# flake8>=6.0.0
+
+# ============================================================================
+# ENVIRONMENT SETUP NOTES
+# ============================================================================
+
+# Python Version:
+#   Required: Python 3.10 or higher
+#   Recommended: Python 3.11 or 3.12 for best performance
+#
+# Virtual Environment (Recommended):
+#   python -m venv venv
+#   source venv/bin/activate  # On Windows: venv\Scripts\activate
+#   pip install -r requirements.txt
+#
+# API Keys Required:
+#   - GOOGLE_API_KEY: Your Google Generative AI API key
+#     Set in environment: export GOOGLE_API_KEY="your-key-here"
+#     Or in .env file (if using python-dotenv)
+#
+# System Requirements:
+#   - RAM: 2 GB minimum (4 GB recommended for large datasets)
+#   - Disk: 500 MB for Python environment + dependencies
+#   - Network: Required for Gemini API calls
+
+# ============================================================================
+# DEPENDENCY LAYER EXPLANATION
+# ============================================================================
+
+# Layer 1: Scout Core (Deterministic)
+#   Dependencies: pandas
+#   Purpose: CSV profiling, statistics, data quality metrics
+#   No external APIs, completely offline
+#
+# Layer 2: Gemini Analysis (LLM Interpretation)
+#   Dependencies: google-generativeai
+#   Purpose: Natural language explanation of data quality issues
+#   Requires: GOOGLE_API_KEY environment variable
+#   Requires: Internet connection
+#
+# Layer 3: Agent Orchestration (Conversational)
+#   Dependencies: google-adk (when available)
+#   Purpose: Agent interface, tool registration, context management
+#   Used in: adk_agent.py (currently a placeholder)
+#
+# This layered approach means:
+#   - You can use Layer 1 offline without any external dependencies
+#   - Add Layer 2 (Gemini) for richer insights with an API key
+#   - Add Layer 3 (ADK) for full agent workflow when available
+
+# ============================================================================
+# INSTALLATION VERIFICATION
+# ============================================================================
+
+# After installing, verify dependencies with:
+#   pip list
+#   python -c "import pandas; import google.generativeai; print('All core dependencies installed!')"
+#
+# Test the core functionality:
+#   python -m src.main eval_data/balanced_sample.csv --target_column label
+#
+# Run golden tests:
+#   python golden_tests.py
+
+# ============================================================================
+# TROUBLESHOOTING
+# ============================================================================
+
+# If you encounter issues:
+#
+# 1. pandas installation fails
+#    - Ensure you have a C compiler (Windows: Visual Studio Build Tools)
+#    - Try: pip install --upgrade pip setuptools wheel
+#
+# 2. google-generativeai import errors
+#    - Verify: python -c "import google.generativeai"
+#    - Check: GOOGLE_API_KEY is set correctly
+#
+# 3. ADK not available
+#    - This is expected during development
+#    - Will be provided in the Google AI Agents Intensive course materials
+#
+# 4. Permission issues on Windows
+#    - Use: py -m pip install -r requirements.txt
+#    - Or run PowerShell as Administrator
+
+# ============================================================================
+# VERSION PINNING STRATEGY
+# ============================================================================
+
+# Major version: Locked (e.g., >=2.0.0,<3.0.0)
+#   Reason: Major version changes indicate breaking changes
+#   Benefit: Prevents incompatible upgrades while allowing bug fixes
+#
+# Minor version: Open (e.g., >=2.0.0)
+#   Reason: Minor versions typically add features without breaking changes
+#   Benefit: Allows security patches and performance improvements
+#
+# Patch version: Open
+#   Reason: Patch versions are bug fixes and security updates
+#   Benefit: Always get the latest stable fixes
+
+# ============================================================================
+# UPDATING DEPENDENCIES
+# ============================================================================
+
+# Check for outdated packages:
+#   pip list --outdated
+#
+# Update a specific package:
+#   pip install --upgrade pandas
+#
+# Update all packages:
+#   pip install --upgrade -r requirements.txt
+#
+# Check for security vulnerabilities:
+#   pip-audit  # Requires: pip install pip-audit
+
+# ============================================================================
+# FOR PRODUCTION DEPLOYMENT
+# ============================================================================
+
+# Before deploying to production:
+#
+# 1. Lock all versions explicitly:
+#    pip freeze > requirements.txt
+#
+# 2. Test thoroughly with locked versions
+#
+# 3. Consider using:
+#    - Containerization (Docker) for reproducible environments
+#    - Cloud provider package management
+#    - Monitoring and logging for Gemini API calls
+#
+# 4. Security considerations:
+#    - Use IAM for API key management
+#    - Rotate API keys regularly
+#    - Monitor API usage and costs
+#    - Add rate limiting for API calls
+#
+# 5. Performance tuning:
+#    - Cache Gemini responses when possible
+#    - Batch requests to reduce API calls
+#    - Use appropriate models for your use case
+
+# ============================================================================
