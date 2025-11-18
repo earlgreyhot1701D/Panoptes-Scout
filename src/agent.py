@@ -4,10 +4,21 @@ from .tools import profile_dataset
 
 
 def _format_percentage(p: float) -> str:
+    """Format a decimal as a percentage string."""
     return f"{p * 100:.1f}%"
 
 
 def _pick_top_missing(missing_list: list[dict], top_n: int = 3) -> list[dict]:
+    """
+    Pick top N columns with missing values.
+
+    Args:
+        missing_list: List of dictionaries with 'column' and 'missing_pct' keys
+        top_n: Number of top missing columns to return
+
+    Returns:
+        List of dictionaries for columns with missing values, sorted by percentage
+    """
     sorted_cols = sorted(
         missing_list,
         key=lambda c: c.get("missing_pct", 0.0),
@@ -17,6 +28,16 @@ def _pick_top_missing(missing_list: list[dict], top_n: int = 3) -> list[dict]:
 
 
 def _compute_imbalance(target_info: dict | None) -> dict | None:
+    """
+    Compute class imbalance statistics.
+
+    Args:
+        target_info: Dictionary with 'distribution' key containing class counts
+
+    Returns:
+        Dictionary with min_class, min_pct, and is_imbalanced (threshold: 10%)
+        Returns None if no valid target info provided
+    """
     if not target_info:
         return None
     dist = target_info.get("distribution", {})
@@ -36,10 +57,23 @@ def _compute_imbalance(target_info: dict | None) -> dict | None:
 
 
 def build_briefing(summary: dict, target_column: str | None = None) -> str:
-    """Turn a raw summary dictionary into a human friendly briefing.
+    """
+    Build a human-friendly narrative briefing from raw profiling stats.
 
-    This deterministic function is a temporary stand in for a Gemini powered agent.
-    It can be replaced later while keeping the same input and output contracts.
+    Design: This function translates the raw summary dictionary (rows,
+    columns, counts, percentages) into a structured narrative with three
+    sections: overview, key issues, and recommended next moves.
+
+    The output is intentionally short and scannable—analysts should
+    understand the main risks in 30 seconds. This keeps cognitive load low,
+    which is the core value proposition of Panoptes Scout.
+
+    Args:
+        summary: Dictionary from profile_dataset with data quality metrics
+        target_column: Optional target column name for context in warnings
+
+    Returns:
+        Human-readable briefing with overview, issues, and recommendations
     """
 
     n_rows = summary.get("n_rows", 0)
@@ -124,12 +158,19 @@ def build_briefing(summary: dict, target_column: str | None = None) -> str:
 
 
 def run_panoptes_scout(csv_path: str, target_column: str | None = None) -> str:
-    """Entry point for Panoptes Scout.
+    """
+    Entry point for Panoptes Scout.
 
     For now this uses a deterministic briefing builder on top of the profiling tool.
     Gemini and the ADK can replace the briefing layer later without changing this
     function signature.
-    """
 
+    Args:
+        csv_path: Path to CSV file to analyze
+        target_column: Optional name of target/label column
+
+    Returns:
+        Human-readable briefing string
+    """
     summary = profile_dataset(csv_path=csv_path, target_column=target_column)
     return build_briefing(summary, target_column=target_column)

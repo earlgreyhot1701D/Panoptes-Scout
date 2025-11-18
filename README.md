@@ -67,12 +67,50 @@ Together these pieces demonstrate
 
 ## 🚀 Features
 
-* 📊 Profiles CSV datasets using pandas  
-* ⚠️ Highlights missing values, duplicate rows, and class imbalance  
-* 💡 Outputs human readable briefings rather than raw dictionaries  
-* 🧪 Includes golden test cases under `eval_data`  
-* 🤖 Provides a Gemini based analysis layer for richer commentary  
-* 🧵 Includes an ADK ready agent definition so Panoptes can live inside a larger agent system  
+* 📊 Profiles CSV datasets using pandas
+* ⚠️ Highlights missing values, duplicate rows, and class imbalance
+* 💡 Outputs human readable briefings rather than raw dictionaries
+* 🧪 Includes golden test cases under `eval_data`
+* 🤖 Provides a Gemini based analysis layer for richer commentary
+* 🧵 Includes an ADK ready agent definition so Panoptes can live inside a larger agent system
+
+---
+
+## ⚡ Quick Start
+
+### For Humans
+```bash
+# Install
+pip install -r requirements.txt
+
+# Analyze a CSV
+python -m src.main your_data.csv --target_column label
+
+# Or without target column
+python -m src.main your_data.csv
+```
+
+### For Agents
+```python
+from scout_tool import scout_briefing, gemini_analysis
+
+# Get structured summary
+summary = scout_briefing("data.csv", target_column="target", output_format="json")
+
+# Get human-readable briefing
+briefing = scout_briefing("data.csv", target_column="target", output_format="text")
+print(briefing)
+
+# Get Gemini analysis (requires GOOGLE_API_KEY)
+analysis = gemini_analysis(summary)
+print(analysis)
+```
+
+### For Testing
+```bash
+# Run golden tests
+python golden_tests.py
+```
 
 ---
 
@@ -93,9 +131,52 @@ Investigate and remove exact duplicate rows.
 Plan for class imbalance handling in the target variable.
 ```
 
-Actual wording will vary, but every run follows this pattern  
+Actual wording will vary, but every run follows this pattern
 
 A short overview, key issues, and concrete starting moves.
+
+---
+
+## 📋 Implementation Notes
+
+### Design Philosophy
+
+Panoptes Scout follows three key principles:
+
+1. **Deterministic First**
+   - Core profiling (counts, percentages, duplicates) is 100% reproducible
+   - No randomness or external dependencies in the scout logic
+   - Gemini and LLMs sit on top, never inside fact-generation
+
+2. **Agent-Friendly Interface**
+   - `scout_briefing()` is a clean tool for agent registration
+   - Returns either structured JSON or human-readable text
+   - Designed to work with Google ADK agents
+
+3. **Minimal Dependencies**
+   - Core scout: only pandas + standard library
+   - Gemini: optional, imported at tool layer
+   - Keeps the project lightweight and portable
+
+### Features Demonstrated
+
+For the hackathon submission, Panoptes Scout demonstrates:
+- **Custom Tools:** `scout_briefing` for CSV profiling
+- **Gemini Integration:** Uses gemini-2.0-flash for richer analysis
+- **Observability:** Structured logging throughout the pipeline
+- **Enterprise Use Case:** Data quality is a real business problem
+
+### Agent Integration
+
+Panoptes Scout is designed to work in agent workflows:
+
+1. Agent receives CSV path from user
+2. Agent calls `scout_briefing` tool
+3. Tool returns structured metrics
+4. Agent interprets and provides context
+5. User gets actionable briefing + recommendations
+
+The deterministic core ensures facts are always correct; the agent layer adds reasoning and context-awareness.
 
 ---
 
