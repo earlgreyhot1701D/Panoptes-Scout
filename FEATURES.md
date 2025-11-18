@@ -29,14 +29,14 @@ results returned.
 
 ## Bonus Points
 
-### Gemini Use (5 pts) ✅
+### Gemini Use ✅
 Uses `gemini-2.0-flash` for analysis enhancement.
 
-### Deployment (5 pts) ⚠️
-Not deployed (optional per rubric; focused on code quality instead).
+### Deployment ⚠️
+Not deployed (optional per rubric).
 
-### Video (10 pts) ⚠️
-Not included (optional; writeup is better ROI for judging).
+### Video ⚠️
+[![Panoptes Scout: Your Dataset's First Diagnosis](https://img.youtube.com/vi/TnSb1rt40gI/maxresdefault.jpg)](https://youtu.be/TnSb1rt40gI)
 
 ## How to Run
 
